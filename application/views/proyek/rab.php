@@ -47,14 +47,7 @@ if(HakAkses(7)->delete == 1){
                             </div>
      
                             <div class="form-group col-sm-3">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">
-                                            <i class="far fa-calendar-alt"></i>
-                                        </span>
-                                    </div>
-                                    <input type="text" class="form-control float-right" id="hari_ini">
-                                </div>
+                                
                             </div>
                             <div class="form-group col-sm-4">
                             </div>

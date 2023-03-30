@@ -39,7 +39,7 @@ class Proyek_model extends CI_Model{
         $this->db->join('db_group', 'db_user.group_id = db_group.id');
         $this->db->join('store_profile', 'db_user.store_id = store_profile.id');
         $this->db->where('tbl_kavling.id_perum',$this->session->userdata('id_perumahan'));
-        $this->db->order_by('master_proyek.tgl_pengajuan', 'desc');
+        $this->db->order_by('master_proyek.tgl_pengajuan', 'ASC');
         
 
         $i = 0;
@@ -95,8 +95,9 @@ class Proyek_model extends CI_Model{
     {
         $this->_get_datatables_query();
         $this->db->group_by('master_proyek.id');
-		if($_POST['length'] != -1)
-		$this->db->limit($_POST['length'], $_POST['start']);
+		if($_POST['length'] != -1) {
+            $this->db->limit($_POST['length'], $_POST[ 'start']);
+        }
 		$query = $this->db->get();
 		return $query->result();
     }
@@ -107,8 +108,9 @@ class Proyek_model extends CI_Model{
         $this->db->where('master_proyek.approve',1);
         $this->db->where('master_proyek.end', 0);
         $this->db->group_by('master_proyek.id');
-		if($_POST['length'] != -1)
-		$this->db->limit($_POST['length'], $_POST['start']);
+		if($_POST['length'] != -1) {
+            $this->db->limit($_POST['length'], $_POST['start']);
+        }
 		$query = $this->db->get();
 		return $query->result();
     }

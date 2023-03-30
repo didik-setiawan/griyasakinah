@@ -2180,11 +2180,11 @@ if($url_cek == 'inventaris/daftar_barang/'){
 
             $(function() {
 
-                $('#hari_ini').daterangepicker({
-                    locale: {
-                    format: 'YYYY-MM-DD'
-                    }
-                })
+                // $('#hari_ini').daterangepicker({
+                //     locale: {
+                //     format: 'YYYY-MM-DD'
+                //     }
+                // })
 
                 $('#tgl_pengajuan').daterangepicker({
                     singleDatePicker: true,
