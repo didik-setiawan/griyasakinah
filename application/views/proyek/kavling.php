@@ -28,8 +28,11 @@
                             if($as->id_tipe == $oi->id_tipe){
                         ?>
                         <li class="list-group-item"><?= $oi->blok ?><?= $oi->no_rumah ?>
+                            <?php if($type == 1){ ?>
                                 <button class="btn btn-danger btn-xs float-right hapus-kavling" data-id="<?= $oi->id ?>"><i class="fa fa-trash"></i></button>
                                 <button class="btn btn-xs btn-primary float-right mr-1 edit-kavling" data-id="<?= $oi->id ?>"><i class="fa fa-edit"></i></button>
+                            <?php } else { ?>
+                            <?php } ?>
                         </li>
                         <?php
                                 }else{

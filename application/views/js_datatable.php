@@ -2254,7 +2254,10 @@ if($url_cek == 'inventaris/daftar_barang/'){
 
                 $.ajax({
                     url: '<?= site_url('proyek/view_all_kavling'); ?>',
-                    data: {id:id},
+                    data: {
+                        id:id,
+                        type: '1'
+                    },
                     method: 'POST',
                     success: function(d){
                         $('#detail-kavling').html(d);

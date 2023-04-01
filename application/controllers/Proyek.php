@@ -1069,12 +1069,18 @@ class Proyek extends CI_Controller {
 
     public function view_all_kavling(){
         $id = $_POST['id'];
+        if(isset($_POST['type'])){
+            $type = 1;
+        } else {
+            $type = 0;
+        }
         if($id != NULL){
             $rab = $this->Proyek_model->listPengajuan($id);
                 $data = [
                     'rab'       => $rab->row(),
                     'tipe'      => $this->Proyek_model->listKavlingProyek($id)->result(),
                     'kavling'  => $this->Proyek_model->RabKavling($id)->result(),
+                    'type' => $type
                 ];
                 $this->load->view('proyek/kavling', $data);
         }
