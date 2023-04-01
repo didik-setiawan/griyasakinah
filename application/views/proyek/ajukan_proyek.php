@@ -85,7 +85,7 @@ if(HakAkses(7)->delete == 1){
 
 
 <div class="modal fade" id="detailKavling" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="detailKavlingLabel" aria-hidden="true">
-  <div class="modal-dialog modal-md modal-dialog-scrollable">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header bg-secondary">
         <h5 class="modal-title text-light" id="detailKavlingLabel">Detail Kavling</h5>
@@ -93,8 +93,10 @@ if(HakAkses(7)->delete == 1){
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" id="detail-kavling">
-          <input type="text" id="id">
+      <div class="modal-body">
+          <button class="btn btn-sm mb-2 btn-success" id="addKavling"><i class="fa fa-plus"></i> Tambah Kavling</button>
+          <input type="hidden" id="id_proyek_save">
+          <div id="detail-kavling"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
@@ -104,68 +106,66 @@ if(HakAkses(7)->delete == 1){
 </div>
 
     <div class="modal fade" id="add-pengajuan" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="add-pengajuanLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header bg-dark text-light">
-            <h5 class="modal-title" id="add-pengajuanLabel">Ajukan Proyek</h5>
-            <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-        <div class="form-group col-sm-12">
-            <label for="tgl_pengajuan">Tanggal : </label>
-            <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">
-                            <i class="far fa-calendar-alt"></i>
-                        </span>
-                    </div>
-                    <input type="text" name="tgl_pengajuan" value="<?=date('Y-m-d')?>" class="form-control pull-right" id="tgl_pengajuan" required>
-                </div>
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header bg-dark text-light">
+                <h5 class="modal-title" id="add-pengajuanLabel">Ajukan Proyek</h5>
+                <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="col-lg-12">
-                <div class="form-group">
-                    <label>Nama Proyek</label>
-                    <input type="text" name="nama_proyek" autocomplete="off" id="nama_proyek" class="form-control" required placeholder="...">
-                </div>
-            </div>
-            <div id="containerTipe">
-                <hr>
-                <div class="form-group col-sm-12">
-                    <label>Pilih Cluster</label>
-                    <select class="form-control cluster0 cluster" id="id_cluster" name="id_cluster[]"  required>
-                    <option value="0">-pilih-</option>
-                    <?php foreach($cluster as $row):?>
-                    <option value="<?php echo $row->id_cluster;?>"><?php echo $row->nama_cluster;?></option>
-                    <?php endforeach;?>
-                    </select>
-                </div>
-                <div class="form-group col-sm-12">
-                    <label>Pilih Tipe</label>
-                    <select class="form-control tipe0 tipe" id="id_tipe" name="id_tipe[]"  required>
-                    <option value="0">-pilih-</option>
-                    </select>
-                </div>
-                <div class="form-group col-sm-12">
-                    <label>Pilih Kavling</label>
-                    <select class="form-control kavling kavling_id" id="kavling_id" name="kavling_id[]" multiple="multiple" required>
-                    </select>
-                </div>
-            </div>
+            <div class="modal-body">
             <div class="form-group col-sm-12">
-                <button class="btn btn-success btn-sm tambahTipe col-12" disabled><i class="fa fa-plus"></i> Tipe</button>
+                <label for="tgl_pengajuan">Tanggal : </label>
+                <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="far fa-calendar-alt"></i>
+                            </span>
+                        </div>
+                        <input type="text" name="tgl_pengajuan" value="<?=date('Y-m-d')?>" class="form-control pull-right" id="tgl_pengajuan" required>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label>Nama Proyek</label>
+                        <input type="text" name="nama_proyek" autocomplete="off" id="nama_proyek" class="form-control" required placeholder="...">
+                    </div>
+                </div>
+                <div id="containerTipe">
+                    <hr>
+                    <div class="form-group col-sm-12">
+                        <label>Pilih Cluster</label>
+                        <select class="form-control cluster0 cluster" id="id_cluster" name="id_cluster[]"  required>
+                        <option value="0">-pilih-</option>
+                        <?php foreach($cluster as $row):?>
+                        <option value="<?php echo $row->id_cluster;?>"><?php echo $row->nama_cluster;?></option>
+                        <?php endforeach;?>
+                        </select>
+                    </div>
+                    <div class="form-group col-sm-12">
+                        <label>Pilih Tipe</label>
+                        <select class="form-control tipe0 tipe" id="id_tipe" name="id_tipe[]"  required>
+                        <option value="0">-pilih-</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-sm-12">
+                        <label>Pilih Kavling</label>
+                        <select class="form-control kavling kavling_id" id="kavling_id" name="kavling_id[]" multiple="multiple" required>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-sm-12">
+                    <button class="btn btn-success btn-sm tambahTipe col-12" disabled><i class="fa fa-plus"></i> Tipe</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-sm" id="save" name="save"><i class="fa fa-save"></i> Simpan</button>
+            </div>
             </div>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary btn-sm" id="save" name="save"><i class="fa fa-save"></i> Simpan</button>
-        </div>
-        </div>
     </div>
-    </div>
-
-
         <div class="modal fade" id="approve-item">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -278,4 +278,91 @@ if(HakAkses(7)->delete == 1){
                     </div>
                 </div>
             </div>
+    </div>
+
+
+    <div class="modal fade" id="modalAddKavling" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header bg-dark text-light">
+                <h5 class="modal-title" id="staticBackdropLabel">Tambah Kavling Proyek</h5>
+            </div>
+            <form action="<?= site_url('proyek/add_new_kavling_proyek') ?>" id="formAddKavling" method="post">
+            <div class="modal-body">
+                <input type="hidden" name="proyek" id="proyek_kavling_id">
+                <div class="form-group">
+                    <label>Cluster</label>
+                    <select name="cluster" id="cluster_modal2" class="form-control" required>
+                        <option value="">--pilih--</option>
+                        <?php foreach($cluster as $row):?>
+                            <option value="<?php echo $row->id_cluster;?>"><?php echo $row->nama_cluster;?></option>
+                        <?php endforeach;?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Tipe</label>
+                    <select name="tipe" id="tipe_kavling_id" class="form-control" required>
+                        <option value="">--pilih--</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>kavling</label>
+                    <select name="kavling[]" id="kavling_id_select" multiple="multiple" class="form-control" required>
+                    </select>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" id="addKavlingMore" class="btn btn-primary">Go</button>
+            </div>
+            </form>
+            </div>
         </div>
+    </div>
+
+
+    <!-- Modal -->
+<div class="modal fade" id="kavlingEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-light">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Kavling Proyek</h5>
+      </div>
+      <form action="<?= site_url('proyek/edit_kavling_proyek') ?>" id="formEditKavling" method="post">
+      <div class="modal-body">
+        <i><b>Pilih Kavling Baru</b></i>
+        <br>
+        <input type="hidden" name="id_proyek" id="id_proyek_edit">
+        <div class="form-group">
+            <label>Cluster</label>
+            <select name="cluster" id="cluster_proyek_edit" class="form-control" required>
+                <option value="">--pilih--</option>
+                <?php foreach($cluster as $row):?>
+                    <option value="<?php echo $row->id_cluster;?>"><?php echo $row->nama_cluster;?></option>
+                <?php endforeach;?>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Tipe</label>
+            <select name="tipe" id="tipe_proyek_edit" class="form-control" required>
+                <option value="">--pilih--</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Kavling</label>
+            <select name="kavling" id="kavling_proyek_edit" class="form-control" required>
+                <option value="">--pilih--</option>
+            </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" id="goEdit">Go</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>

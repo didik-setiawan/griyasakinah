@@ -1084,16 +1084,6 @@ class Proyek extends CI_Controller {
         checkUserLogin();
         $q = "SELECT * FROM master_supplier";
 
-        // if(isset($_GET['filter'])){
-        //     $data = $this->Logistik_model->getDataPengajuanMaterial($_GET['filter'])->result();
-        // }
-        // else if(isset($_GET['status'])){
-        //     $data = $this->logistik->getFilterDataPengajuan($_GET['status']);
-        // }
-        // else {
-        //     $data = $this->Logistik_model->getDataPengajuanMaterial(null)->result();
-        // }
-
         if(isset($_GET['filter']) || isset($_GET['status'])){
             if(empty($_GET['status'])){
                 $data = $this->Logistik_model->getDataPengajuanMaterial($_GET['filter'])->result();
@@ -1795,5 +1785,95 @@ class Proyek extends CI_Controller {
         }
         echo json_encode($params);
     }
+
+    public function add_new_kavling_proyek(){
+        $proyek = $_POST['proyek'];
+        $kavling = $_POST['kavling'];
+
+        $i = count($kavling);
+        $data = array();
+        for($a=0; $a<$i; $a++){
+            array_push($data, array(
+                'proyek_id' => $proyek,
+                'kavling_id' => $kavling[$a],
+                'user_id' => $this->session->userdata('user_id'),
+            ));
+            $id_kav = $kavling[$a];
+
+            $this->db->set('proyek', 1)->where('id_kavling', $id_kav)->update('tbl_kavling');
+        }
+        $this->db->insert_batch('master_proyek_kavling', $data);
+
+        if($this->db->affected_rows() > 0){
+            $params = [
+                'success' => true,
+                'msg' => 'Kavling baru berhasil di tambahkan'
+            ];
+        } else {
+            $params = [
+                'success' => false,
+                'msg' => 'Kavling baru gagal di tambahkan'
+            ];
+        }
+        echo json_encode($params);
+    }
+
+    public function delete_kavling_proyek(){
+        $id = $_POST['id'];
+        $this->db->select('
+            tbl_kavling.*
+        ')->from('tbl_kavling')
+        ->join('master_proyek_kavling', 'tbl_kavling.id_kavling = master_proyek_kavling.kavling_id')
+        ->where('master_proyek_kavling.id', $id);
+        $get_data = $this->db->get()->row();
+        
+        $this->db->set('proyek', 0)->where('id_kavling', $get_data->id_kavling)->update('tbl_kavling');
+        $this->db->delete('master_proyek_kavling', ['id' => $id]);
+        if($this->db->affected_rows() > 0){
+            $params = [
+                'status' => true,
+                'msg' => 'Kavling berhasil di hapus'
+            ];
+        } else {
+            $params = [
+                'status' => false,
+                'msg' => 'Kavling gagal di hapus'
+            ];
+        }
+
+        echo json_encode($params);
+    }
+
+    public function edit_kavling_proyek(){
+        $kavling = $_POST['kavling'];
+        $id = $_POST['id_proyek'];
+
+        $this->db->select('
+            tbl_kavling.*
+        ')->from('tbl_kavling')
+        ->join('master_proyek_kavling', 'tbl_kavling.id_kavling = master_proyek_kavling.kavling_id')
+        ->where('master_proyek_kavling.id', $id);
+        $get_data = $this->db->get()->row();
+        
+        $this->db->set('proyek', 0)->where('id_kavling', $get_data->id_kavling)->update('tbl_kavling');
+        $this->db->set('proyek', 1)->where('id_kavling', $kavling)->update('tbl_kavling');
+        $this->db->set('kavling_id', $kavling)->where('id', $id)->update('master_proyek_kavling');
+
+        if($this->db->affected_rows() > 0){
+            $params = [
+                'success' => true,
+                'msg' => 'Kavling berhasil di edit'
+            ];
+        } else {
+            $params = [
+                'success' => false,
+                'msg' => 'Kavling gagal di edit'
+            ];
+        }
+
+        echo json_encode($params);
+
+    }
+
 
 }

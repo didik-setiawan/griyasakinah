@@ -2250,6 +2250,7 @@ if($url_cek == 'inventaris/daftar_barang/'){
 
             $(document).on('click', '#set_kav', function() {
                 var id = $(this).data('id');
+                $('#id_proyek_save').val(id);
 
                 $.ajax({
                     url: '<?= site_url('proyek/view_all_kavling'); ?>',
@@ -2801,7 +2802,7 @@ if($url_cek == 'inventaris/daftar_barang/'){
                     }
                 })
 
-            });
+        });
 
 
             $(document).on('click','.btn-print',function(){
@@ -2810,6 +2811,314 @@ if($url_cek == 'inventaris/daftar_barang/'){
                 window.open(link);
             });
 
+
+            $('#addKavling').click(function(){
+                let proyek = $('#id_proyek_save').val();
+                $('#proyek_kavling_id').val(proyek);
+                $('#modalAddKavling').modal('show');
+
+                $('#cluster_modal2').val('');
+                $('#tipe_kavling_id').val('');
+                $('#kavling_id_select').val('');
+
+            });
+
+            $('#kavling_id_select').select2();
+            $('#kavling_proyek_edit').select2();
+
+            $('#cluster_modal2').change(function(){
+                var id=$(this).val();
+                        $.ajax({
+                            url : "<?php echo site_url('proyek/get_tipe');?>",
+                            method : "POST",
+                            data : {id: id},
+                            async : true,
+                            dataType : 'json',
+                            success: function(data){ 
+                                
+                                var html = '<option value="">-Pilih-</option>';
+                                var i;
+                                
+                                for(i=0; i<data.length; i++){
+                                    html += '<option value='+data[i].id_tipe+'>'+data[i].tipe+'</option>';
+                                }
+                                $('#tipe_kavling_id').html(html);
+                                
+                            }
+                        });
+                    return false;
+            });
+
+            $('#tipe_kavling_id').change(function(){
+                var id=$(this).val();
+                    
+                        $.ajax({
+                            url : "<?php echo site_url('proyek/get_kavling');?>",
+                            method : "POST",
+                            data : {
+                                id:id,
+                            },
+                            async : true,
+                            dataType : 'json',
+                            success: function(data){ 
+                                var html = '<option value="">-pilih-</option>';
+                                var k;
+                                
+                                for(k=0; k<data.length; k++){
+                                    html += '<option value='+data[k].id_kavling+'>'+data[k].blok+data[k].no_rumah +'</option>';
+                                }
+
+                                $('#kavling_id_select').html(html);
+                            }
+                        });
+                    return false;
+            });
+
+            $('#formAddKavling').submit(function(e){
+                e.preventDefault();
+                const spinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+                $('#addKavlingMore').attr('disabled', true);
+                $('#addKavlingMore').html(spinner);
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    data: $(this).serialize(),
+                    type: 'POST',
+                    dataType: 'JSON',
+                    success: function(d){
+                        $('#modalAddKavling').modal('hide');
+                        $('#detailKavling').modal('hide');
+
+                        $('#addKavlingMore').removeAttr('disabled');
+                        $('#addKavlingMore').html('Go');
+
+                        if(d.success == true){
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: d.msg
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: d.msg
+                            })
+                        }
+                    },
+                    error: function(xhr){
+                        $('#addKavlingMore').removeAttr('disabled');
+                        $('#addKavlingMore').html('Go');
+                        if(xhr.status === 0){
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'No internet access'
+                            })
+                        } else if(xhr.status == 404){
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Page not found'
+                            })
+                        } else if(xhr.status == 500){
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Internal server error'
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Unknow error'
+                            })
+                        }
+                    }
+                });
+
+            });
+
+            $(document).on('click', '.hapus-kavling', function(){
+                const conf = confirm('APakah anda yakin untuk menghapus kavling ini?');
+                let id = $(this).data('id');
+                
+                if(conf){
+                    $.ajax({
+                        url: '<?= site_url('proyek/delete_kavling_proyek') ?>',
+                        data: {id: id},
+                        type: 'POST',
+                        dataType: 'JSON',
+                        success: function(d){
+                            $('#detailKavling').modal('hide');
+                            
+                            if(d.status == true){
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: d.msg
+                                })
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: d.msg
+                                })
+                            }
+
+                        },
+                        error: function(xhr){
+                            if(xhr.status === 0){
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'No internet access'
+                                })
+                            } else if(xhr.status == 404){
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Page not found'
+                                })
+                            } else if(xhr.status == 500){
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Internal server error'
+                                })
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Unknow error'
+                                })
+                            }
+                        }
+                    });
+                }
+            });
+
+            $(document).on('click', '.edit-kavling', function(){
+                $('#kavlingEdit').modal('show');
+                let id = $(this).data('id');
+                $('#id_proyek_edit').val(id);
+                $('#cluster_proyek_edit').val('');
+                $('#tipe_proyek_edit').val('');
+                $('#kavling_proyek_edit').val('');
+
+            });
+
+            $('#cluster_proyek_edit').change(function(){
+                var id=$(this).val();
+                        $.ajax({
+                            url : "<?php echo site_url('proyek/get_tipe');?>",
+                            method : "POST",
+                            data : {id: id},
+                            async : true,
+                            dataType : 'json',
+                            success: function(data){ 
+                                
+                                var html = '<option value="">-Pilih-</option>';
+                                var i;
+                                
+                                for(i=0; i<data.length; i++){
+                                    html += '<option value='+data[i].id_tipe+'>'+data[i].tipe+'</option>';
+                                }
+                                $('#tipe_proyek_edit').html(html);
+                                
+                            }
+                        });
+                    return false;
+            });
+
+            $('#tipe_proyek_edit').change(function(){
+                var id=$(this).val();
+                    
+                        $.ajax({
+                            url : "<?php echo site_url('proyek/get_kavling');?>",
+                            method : "POST",
+                            data : {
+                                id:id,
+                            },
+                            async : true,
+                            dataType : 'json',
+                            success: function(data){ 
+                                var html = '<option value="">-pilih-</option>';
+                                var k;
+                                
+                                for(k=0; k<data.length; k++){
+                                    html += '<option value='+data[k].id_kavling+'>'+data[k].blok+data[k].no_rumah +'</option>';
+                                }
+
+                                $('#kavling_proyek_edit').html(html);
+                            }
+                        });
+                    return false;
+            });
+
+            $('#formEditKavling').submit(function(e){
+                e.preventDefault();
+                const spinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+                $('#goEdit').attr('disabled', true);
+                $('#goEdit').html(spinner);
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    data: $(this).serialize(),
+                    type: 'POST',
+                    dataType: 'JSON',
+                    success: function(d){
+                        $('#kavlingEdit').modal('hide');
+                        $('#detailKavling').modal('hide');
+
+                        $('#goEdit').removeAttr('disabled');
+                        $('#goEdit').html('Go');
+
+                        if(d.success == true){
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: d.msg
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: d.msg
+                            })
+                        }
+                    },
+                    error: function(xhr){
+                        $('#goEdit').removeAttr('disabled');
+                        $('#goEdit').html('Go');
+                        if(xhr.status === 0){
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'No internet access'
+                            })
+                        } else if(xhr.status == 404){
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Page not found'
+                            })
+                        } else if(xhr.status == 500){
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Internal server error'
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Unknow error'
+                            })
+                        }
+                    }
+                });
+            });
 
         </script>
     <?php
@@ -7797,8 +8106,7 @@ $(document).on('click','.detailKeluar', function(){
         });
 
 
-        // $('.del-kavling').on('click', function(){
-            $(document).on('click','.del-kavling', function(){
+        $(document).on('click','.del-kavling', function(){
             var id = $(this).data('id');
 
             $.ajax({
