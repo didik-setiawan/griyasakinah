@@ -2263,7 +2263,6 @@ if($url_cek == 'inventaris/daftar_barang/'){
                         $('#detail-kavling').html(d);
                     }
                 });
-                
             });
 
                 $('#id_cluster').change(function(){
@@ -4772,7 +4771,6 @@ if($url_cek == 'inventaris/daftar_barang/'){
 
             $('.add-nota').click(function(){
                 $('#modalNota').modal('show');
-
             });
 
 

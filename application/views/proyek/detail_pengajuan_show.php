@@ -1,3 +1,4 @@
+<!-- <?php var_dump($data); ?> -->
 <div class="row">
     <div class="col-lg-12">
         <table class="table table-bordered">
@@ -5,10 +6,14 @@
                 <tr class="bg-dark text-light">
                     <th>#</th>
                     <th>Nama Material</th>
-                    <th>Jumlah</th>
-                    <th>Sumber Material</th>
+                    <th>Jumlah Pengajuan</th>
+                    
+                    <th>Total Pengajuan</th>
+                    <th>Sisa Pengajuan</th>
+
                     <th>Harga RAB</th>
                     <th>Harga Rill</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -16,6 +21,22 @@
                 $totalRAB = 0;
                 $totalReal = 0;
                 foreach($data as $d){ 
+                    $prev = $this->db->where([
+                        'proyek_material_id' => $d->proyek_material_id,
+                        'id <' => $d->id_logistik
+                    ])->get('master_logistik')->result();
+
+                   
+            
+                    $total_prev = 0;
+                    foreach($prev as $p){
+                        $total_prev += $p->jml_pengajuan;
+                    } 
+                    $total_di_ajukan = $total_prev + $d->jml_pengajuan;
+
+                    $sisa = $d->quantity - $total_di_ajukan;
+                
+                    
 
                     $proyek_name = $this->db->get_where('master_proyek',['id' => $d->proyek_id])->row()->nama_proyek;
 
@@ -55,7 +76,10 @@
                     <td><?= $i++; ?></td>
                     <td><b><?= $d->nama_material ?></b> <br> <small class="text-success"><?= $d->kategori_produk ?></small></td>
                     <td><?= $d->jml_pengajuan.' '.$d->nama_satuan ?></td>
-                    <td><b><?= $type ?></b> <br> <small class="text-info">Proyek <?= $proyek_name ?></small></td>
+                    
+                    <td><?= $total_di_ajukan .' '. $d->nama_satuan; ?></td>
+                    <td><?= $sisa. ' '. $d->nama_satuan ?></td>
+
                     <td>
                         <?php if($d->type == 1){ ?>
                             <b>Rp. <?= number_format($d->jml_pengajuan * $d->harga); ?></b> <br> <small class="text-primary">(Rp. <?= number_format($d->harga); ?> / item)</small>
@@ -74,7 +98,7 @@
                 <?php } ?>
             </tbody>
             <tr>
-                <th colspan="4">Total Harga</th>
+                <th colspan="5">Total Harga</th>
                 <th>Rp. <?= number_format($totalRAB) ?></th>
                 <th>Rp. <?= number_format($totalReal) ?></th>
             </tr>

@@ -186,7 +186,6 @@ class Proyek_model extends CI_Model{
         tbl_kavling.*, 
         tbl_tipe.*,
         tbl_perumahan.*,
-
         ');
         
         $this->db->from('master_proyek_kavling');
