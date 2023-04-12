@@ -3122,6 +3122,24 @@ if($url_cek == 'inventaris/daftar_barang/'){
                 });
             });
 
+            $(document).on('click', '.detail-rab', function(){
+                const loadingAnimation = '<div class="d-flex justify-content-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
+                $('.loadDataRab').html(loadingAnimation);
+                $('#detailRAB').modal('show');
+                let id = $(this).data('id');
+
+                $.ajax({
+                    url: '<?= site_url('proyek/load_detail_rab_proyek') ?>',
+                    data: {id: id},
+                    type: 'POST',
+                    success: function(d){
+                        $('.loadDataRab').html(d);
+                        $('#toPrintDataRab').attr('href', '<?= site_url('proyek/printProyekRab/') ?>'+id);
+                    }
+                });
+
+            })
+
         </script>
     <?php
 }elseif($url_cek == 'proyek/detail_rab/'){

@@ -366,3 +366,25 @@ if(HakAkses(7)->delete == 1){
     </div>
   </div>
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="detailRAB" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-light">
+        <h5 class="modal-title" id="exampleModalLabel">Detail RAB Proyek</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body loadDataRab">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <a class="btn btn-primary" target="_blank" id="toPrintDataRab" href="#">Print</a>
+      </div>
+    </div>
+  </div>
+</div>

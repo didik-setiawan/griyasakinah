@@ -755,6 +755,7 @@ class Proyek extends CI_Controller {
                     </div>
                     ';
                     $end = '<button class="btn btn-xs btn-dark btn-end" data-id="'.$c->id.'" '.$ended.'>Ended</button>';
+                    $detail_rab = '<button class="btn btn-xs btn-info detail-rab" data-id="'.$c->id.'"><i class="fa fa-search"></i></button>';
 
                 }elseif($c->approve == 2){
                     $warna = 'danger';
@@ -768,6 +769,7 @@ class Proyek extends CI_Controller {
                     </div>
                     ';
                     $end = '';
+                    $detail_rab = '';
                 }
                 elseif($c->approve == 3){
                     $warna = 'dark';
@@ -781,6 +783,7 @@ class Proyek extends CI_Controller {
                     </div>
                     ';
                     $end = '<button class="btn btn-xs btn-info btn-print" data-id="'.$c->id.'"><i class="fas fa-print" '.$ended.'></i></button>';
+                    $detail_rab = '<button class="btn btn-xs btn-info detail-rab" data-id="'.$c->id.'"><i class="fa fa-search"></i></button>';
                 }
                 
                 else{
@@ -800,6 +803,7 @@ class Proyek extends CI_Controller {
                 </div>
                 ';
                 $end = '';
+                $detail_rab = '';
                 }
            
            if(HakAkses(7)->delete == 1){
@@ -838,6 +842,7 @@ class Proyek extends CI_Controller {
                     <button type="button" class="btn btn-xs btn-danger" data-toggle="modal" id="set_delete" data-target="#del-pengajuan" data-id="'.$c->id.'" '.$statusD.' '.$action.'><i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="Hapus"></i></button>
 
                     '.$end.'
+                    '.$detail_rab.'
             ';
 
             $data[] = $row;
@@ -1881,5 +1886,39 @@ class Proyek extends CI_Controller {
 
     }
 
+    public function load_detail_rab_proyek(){
+        $id_proyek = $_POST['id'];
+
+        $data = [
+            'id_proyek' => $id_proyek,
+            'tipe' => $this->Proyek_model->get_tipe_detail_rab_ajax($id_proyek)
+        ];
+        $this->load->view('proyek/detail_rab_proyek', $data);
+    }
+
+    public function printProyekRab($id = null){
+        if(empty($id)){
+            exit('No direct script access allowed');
+        }
+        $id_perum = $this->session->userdata('id_perumahan');
+        $data = [
+            'id_proyek' => $id,
+            'proyek' => $this->db->where('id', $id)->get('master_proyek')->row(),
+            'tipe' => $this->Proyek_model->get_tipe_detail_rab_ajax($id),
+            'perum' => $this->db->where('id_perumahan', $id_perum)->get('tbl_perumahan')->row()
+        ];
+        $html = $this->load->view('proyek/printProyekRab', $data, true);
+        $this->printRAB($html);
+    }
+
+    private function printRAB($html){
+        require FCPATH . 'assets/mpdf/vendor/autoload.php';
+        $pdf = new \Mpdf\Mpdf([
+            'format' => 'A4-P',
+        ]);
+      
+        $pdf->WriteHTML($html);
+        $pdf->Output();
+    }
 
 }

@@ -1811,6 +1811,7 @@ class Proyek_model extends CI_Model{
     public function get_jml_material_ajax_detail_material($id_tipe, $id_proyek, $id_kategori){
         $q = "SELECT
             tbl_proyek_material.*,
+            tbl_proyek_material.id as id_proyek_material,
             master_material.*,
             master_produk_unit.*
             FROM
@@ -2019,6 +2020,35 @@ class Proyek_model extends CI_Model{
         return $this->db->get();
     }
 
+    public function get_material_out_rab($id = null){
+        // $this->db->select('*')->from('master_logistik')->where('proyek_material_id', $id);
+        $this->db->select('
+            pengajuan_material.*,
+            master_logistik.jml_pengajuan,
+            master_logistik_detail.harga_real
+        ')->from('master_logistik')
+        ->join('master_logistik_detail', 'master_logistik.id = master_logistik_detail.logistik_id')
+        ->join('pengajuan_material', 'master_logistik.time = pengajuan_material.time')
+        ->where('pengajuan_material.status_pengajuan', 4)
+        ->where('master_logistik.proyek_material_id', $id);
+        
+        $data = $this->db->get();
+        return $data;
+    }
+
+    public function count_total_upah_out($id_upah, $id_kavling){
+        $this->db->select('
+            SUM(cicil_progres.jumlah) AS total
+        ')->from('cicil_progres')
+        ->join('progres_pembangunan', 'cicil_progres.id_progres = progres_pembangunan.id_progres')
+        ->join('tbl_proyek_upah','progres_pembangunan.upah_id = tbl_proyek_upah.id')
+        ->where('progres_pembangunan.kavling_id', $id_kavling)
+        ->where('progres_pembangunan.upah_id', $id_upah)
+        ->where('cicil_progres.status', 2);
+
+        $data = $this->db->get();
+        return $data;
+    }
 
 }
 
