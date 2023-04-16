@@ -62,7 +62,7 @@
                 <td rowspan="<?= $jml_material + 1 ?>"><?= $jm->kategori_produk ?></td>
                 <td colspan="5" class="bg-secondary"></td>
                 <td rowspan="<?= $jml_material + 1 ?>">Rp. <?= number_format($total_per_jenis) ?> <br>
-                <small class="text-success">Total Terbayar: Rp. <?= number_format($total_all_per_jenis) ?></small>
+                <small class="text-success">Total Harga Real: Rp. <?= number_format($total_all_per_jenis) ?></small>
                 </td>
             </tr>
           
@@ -92,6 +92,7 @@
                   <?php 
                   $tot_mat_out = 0;
                   foreach($mat_out as $mt){ 
+                    $id_pengajuan = $mt->pengajuan_id;
                   $tot_mat_out += $mt->jml_pengajuan * $mt->harga_real;
                   ?>
                     <li class="text-primary">
@@ -108,10 +109,6 @@
             
             <?php  } ?>
         <?php } ?>
-
-
-        
-
 
     </table>
     <?php } ?>

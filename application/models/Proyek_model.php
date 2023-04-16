@@ -2024,6 +2024,7 @@ class Proyek_model extends CI_Model{
         // $this->db->select('*')->from('master_logistik')->where('proyek_material_id', $id);
         $this->db->select('
             pengajuan_material.*,
+            pengajuan_material.id_pengajuan as pengajuan_id,
             master_logistik.jml_pengajuan,
             master_logistik_detail.harga_real
         ')->from('master_logistik')
@@ -2047,6 +2048,60 @@ class Proyek_model extends CI_Model{
         ->where('cicil_progres.status', 2);
 
         $data = $this->db->get();
+        return $data;
+    }
+
+    public function get_all_jml_pembayaran_upah($proyek, $tipe){
+        $data = $this->db->where(['proyek_id' => $proyek, 'tipe_id' => $tipe])->get('tbl_proyek_upah')->num_rows();
+        return $data;
+    }
+
+    public function get_all_progres($proyek, $tipe, $kavling){
+        $this->db->select('SUM(progres) as pro')->from('progres_pembangunan')
+        ->join('tbl_proyek_upah', 'progres_pembangunan.upah_id = tbl_proyek_upah.id')
+        ->where('tbl_proyek_upah.proyek_id', $proyek)
+        ->where('tbl_proyek_upah.tipe_id', $tipe)
+        ->where('progres_pembangunan.kavling_id', $kavling);
+
+        return $this->db->get()->row();
+        
+    }
+
+    public function get_rata_proyek($proyek){
+        $jml_kavling = $this->db->where('proyek_id', $proyek)->get('master_proyek_kavling')->num_rows();
+        $kavling = $this->db->select('tbl_kavling.*')->from('tbl_kavling')->join('master_proyek_kavling', 'tbl_kavling.id_kavling = master_proyek_kavling.kavling_id')->where('master_proyek_kavling.proyek_id', $proyek)->get()->result();
+
+        $rata_per_kavling = 0;
+        foreach($kavling as $k){
+            $id_kavling = $k->id_kavling;
+            $id_tipe = $k->id_tipe;
+
+            $jml_pembayaran = $this->get_all_jml_pembayaran_upah($proyek, $id_tipe);
+            $total_progres = $this->get_all_progres($proyek, $id_tipe, $id_kavling);
+
+            if($jml_pembayaran != null){
+                $pengajuan = $jml_pembayaran;
+            } else {
+                $pengajuan = '';
+            }
+
+            if($total_progres != null){
+                $progres = $total_progres->pro;
+            } else {
+                $progres = '';
+            }
+
+            if($progres == 0 || $progres == ''){
+                $rata = 0;
+            } else {
+                $rata = $progres / $pengajuan;
+            }
+
+            $rata_per_kavling += $rata;
+
+        }
+
+        $data = $rata_per_kavling / $jml_kavling;
         return $data;
     }
 

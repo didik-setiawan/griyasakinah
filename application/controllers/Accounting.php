@@ -270,7 +270,9 @@ class Accounting extends CI_Controller{
         // $html = 'hello';
         require FCPATH . 'assets/mpdf/vendor/autoload.php';
         $pdf = new \Mpdf\Mpdf([
-            'format' => 'A4-P',
+            'mode' => 'utf-8',
+            'format' => 'A4-L',
+            'orientation' => 'L'
         ]);
         $pdf->AddPageByArray([
             'margin-left' => 5,

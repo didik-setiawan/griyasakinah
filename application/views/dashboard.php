@@ -381,11 +381,14 @@
 
                 <?php if($proyek){ ?>
                         <?php foreach($proyek as $pr){
-                            $kavling_proyek = $this->master_model->get_kavling_progres_proyek_dashboard($pr->id_proyek);    
+                            $id_proyek = $pr->id_proyek;
+                            $kavling_proyek = $this->master_model->get_kavling_progres_proyek_dashboard($pr->id_proyek);   
+                            $rata_rata_proyek = $this->proyek->get_rata_proyek($id_proyek); 
                         ?>
                         <table class="table table-bordered mb-3">
                             <tr class="bg-dark">
-                                <th colspan="3"><?= $pr->nama_proyek ?></th>
+                                <th colspan="2"><?= $pr->nama_proyek ?></th>
+                                <th>Rata-rata progres: <?= round($rata_rata_proyek, 1) ?>%</th>
                             </tr>
                             <tr class="bg-info">
                                 <th>#</th>
@@ -393,33 +396,44 @@
                                 <th>Progres</th>
                             </tr>
                             <?php $i=1; foreach($kavling_proyek as $kp){ 
-                                $progres = $this->master_model->get_progres_kavling($kp->id_kavling);  
-                               
+                                $id_tipe = $kp->id_tipe;
+                                $id_kavling = $kp->id_kavling;
+                                $jml_pengajuan = $this->proyek->get_all_jml_pembayaran_upah($id_proyek, $id_tipe);
+                                $total_progres = $this->proyek->get_all_progres($id_proyek, $id_tipe, $id_kavling);
+
+                                if($jml_pengajuan != null){
+                                    $pengajuan = $jml_pengajuan;
+                                } else {
+                                    $pengajuan = '';
+                                }
+
+                                if($total_progres != null){
+                                    $progres = $total_progres->pro;
+
+                                } else {
+                                    $progres = '';
+                                }
+
+                                if($progres == 0 || $progres == ''){
+                                    $rata = 0;
+                                } else {
+                                    $rata = $progres / $pengajuan;
+
+                                }
+
                             ?>
                             <tr>
                                 <td><?= $i++ ?></td>
                                 <td><?= $kp->blok . $kp->no_rumah ?></td>
                                 <td>
-
-                                    <?php 
-                                        if($progres){
-                                        $persentase = $progres->progres;
-                                    ?>
-                                        <span class="small text-bold">Progress : <?= $persentase ?>%</span>
-                                        <div class="progress progress-sm">
-                                            <div class="progress-bar bg-success" style="width: <?= $persentase ?>%">
-                                            </div>
-                                        </div>
-                                    <?php } else { ?>
-                                        <span class="small text-bold">Progress : 0%</span>
-                                        <div class="progress progress-sm">
-                                            <div class="progress-bar bg-success" style="width: 0%">
-                                            </div>
-                                        </div>
-                                    <?php } ?>
+                                    <!-- <?= $progres .'='. $pengajuan ?> -->
                                     
-
-
+                                    <span class="small text-bold">Progress : <?= round($rata, 1) ?>%</span>
+                                        <div class="progress progress-sm">
+                                            <div class="progress-bar bg-success" style="width: <?= round($rata, 1) ?>%">
+                                        </div>
+                                    </div>
+                                    
                                 </td>
                             </tr>
                             <?php } ?>
